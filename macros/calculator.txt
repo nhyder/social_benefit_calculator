@@ -1,0 +1,1341 @@
+Sub calculator()
+'Programs include: SNAP, EITC, TANF, WIC, SBP, SLP
+'Description: Calculate total income + benefits
+
+'------------------------------------'
+'--------- Create variables ---------'
+'------------------------------------'
+
+Dim family As Range 'Family size
+    Set family = Worksheets("Calculator").Range("C9")
+
+Dim gross As Range 'Gross monthly income
+    Set gross = Worksheets("Calculator").Range("C16")
+
+Dim net As Range 'Snap "Net" Income
+    Set net = Worksheets("Calculator").Range("C50")
+
+Dim snap As Range 'Snap benefit
+    Set snap = Worksheets("Calculator").Range("F4")
+
+Dim rent As Range 'Monthly rent obligation
+    Set rent = Worksheets("Calculator").Range("C19")
+
+Dim assets As Range 'Total assets
+    Set assets = Worksheets("Calculator").Range("C18")
+
+Dim tanf As Range 'TANF benefit
+    Set tanf = Worksheets("Calculator").Range("F6")
+
+Dim hs As Range 'Head start benefit
+    Set hs = Worksheets("Calculator").Range("F8")
+
+Dim mar As Range 'Marital Status
+    Set mar = Range("C1")
+
+Dim eitc As Range 'EITC benefit
+    Set eitc = Worksheets("Calculator").Range("F5")
+
+Dim wic As Range 'WIC benefit
+    Set wic = Worksheets("Calculator").Range("F7")
+
+Dim sbp As Range 'School Breakfast Program benefit
+    Set sbp = Worksheets("Calculator").Range("F9")
+
+Dim slp As Range 'School lunch program benefit
+    Set slp = Worksheets("Calculator").Range("F10")
+
+Dim liheap As Range 'LIHEAP
+    Set liheap = Worksheets("Calculator").Range("F11")
+
+Dim net_ssi As Range 'SSI "net" income
+    Set net_ssi = Worksheets("Calculator").Range("D50")
+
+Dim ssi As Range 'SSI benefit
+    Set ssi = Worksheets("Calculator").Range("F12")
+
+Dim dis As Range 'Disability Questions
+    Set dis = Worksheets("Calculator").Range("C20")
+
+Dim flp As Range 'Florida Lifeline Program
+    Set flp = Worksheets("Calculator").Range("F13")
+
+Dim inc As Range
+    Set inc = Worksheets("Calculator").Range("F3")
+
+Dim tax As Range
+    Set tax = Worksheets("Calculator").Range("G16")
+
+Dim taxinc As Range
+    Set taxinc = Worksheets("Calculator").Range("E50")
+
+Dim payroll As Range
+    Set payroll = Worksheets("Calculator").Range("G17")
+
+Dim qualify_01 As Range
+    Set qualify_01 = Worksheets("Calculator").Range("B65")
+
+Dim qualify_15 As Range
+    Set qualify_15 = Worksheets("Calculator").Range("B66")
+
+Dim qualify_618 As Range
+    Set qualify_618 = Worksheets("Calculator").Range("B67")
+
+Dim qualify_parents As Range
+    Set qualify_parents = Worksheets("Calculator").Range("B68")
+
+Dim medicaid As Range
+    Set medicaid = Worksheets("Calculator").Range("F14")
+
+'----- Error Message for Family Size -----'
+If family > 8 Then
+    MsgBox "Family Size Can Not Exceed 8"
+End If
+
+
+'------------------------------------'
+'--------- Income Calculate ---------'
+'------------------------------------'
+
+inc = "=C16"
+
+
+'----------------------------------'
+'--------- Calculate SNAP ---------'
+'----------------------------------'
+
+If family = 1 Then
+    net = "=IF((R16C3-0.2*R15C3-155)<0,0,R16C3-0.2*R15C3-155)"
+    snap = "=IF(R16C3>1276,0,IF(194-0.3*R50C3<16,16,194-0.3*R50C3))"
+   
+ElseIf family = 2 Then
+    net = "=IF((R16C3-0.2* R15C3-155)<0,0,R16C3-0.2* R15C3-155)"
+    snap = "=IF(R16C3>1726,0,IF(357-0.3* R50C3 <16,16,357-0.3* R50C3))"
+
+ElseIf family = 3 Then
+    net = "=IF((R16C3-0.2* R15C3-155)<0,0, R16C3-0.2* R15C3-155)"
+    snap = "=IF(R16C3>2177,0,IF(511-0.3* R50C3 <0,0,511-0.3* R50C3))"
+
+ElseIf family = 4 Then
+    net = "=IF((R16C3-0.2* R15C3-168)<0,0, R16C3-0.2* R15C3-168)"
+    snap = "=IF(R16C3>2628,0,IF(649-0.3* R50C3 <0,0,649-0.3* R50C3))"
+
+ElseIf family = 5 Then
+    net = "=IF((R16C3-0.2* R15C3-197)<0,0, R16C3-0.2* R5C3-197)"
+    snap = "=IF(R16C3>3078,0,IF(771-0.3* R50C3 <0,0,771-0.3* R50C3))"
+
+ElseIf family = 6 Then
+    net = "=IF((R16C3-0.2* R15C3-226)<0,0,R16C3-0.2*R15C3-226)"
+    snap = "=IF(R16C3>3529,0,IF(925-0.3*R50C3<0,0,925-0.3*R50C3))"
+
+ElseIf family = 7 Then
+    net = "=IF((R16C3-0.2* R15C3-226)<0,0, R16C3-0.2* R15C3-226)"
+    snap = "=IF(R16C3>3980,0,IF(1022-0.3*R50C3<0,0,1022-0.3*R50C3))"
+
+ElseIf family = 8 Then
+    net = "=IF((R16C3-0.2* R15C3-226)<0,0, R16C3-0.2* R15C3-226)"
+    snap = "=IF(R16C3>4430,0,IF(1169-0.3*R50C3<0,0,1169-0.3*R50C3))"
+
+End If
+
+If assets >= 2250 Then
+    snap = 0
+End If
+
+'-----------------------------------'
+'---------- Calculate EITC ---------'
+'-----------------------------------'
+
+If mar = "Single" And family = 1 Then
+    eitc = "=IF(R15C3*12>=14820,0,IF(R15C3*12<14820,IF(R15C3*12>=8240,503-(R15C3*12-8240)*0.0765,IF(R15C3*12<8240,IF(R15C3*12>=6580,503,IF(R15C3*12<6580,R15C3*0.0765))))))/12"
+
+    ElseIf mar = "Single" And family = 2 Then
+        eitc = "=IF(R15C3*12>=39131,0,IF(R15C3*12<39131,IF(R15C3*12>=18110,3359-(R15C3*12-18110)*0.1598,IF(R15C3*12<18110,IF(R15C3*12>=9880,3359,IF(R15C3*12<9880,R15C3*12*0.34))))))/12"
+
+    ElseIf mar = "Single" And family = 3 Then
+        eitc = "=IF(R15C3*12>=44454,0,IF(R15C3*12<44454,IF(R15C3*12>=18110,5548-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,5548,IF(R15C3*12<13870,R15C3*12*0.4))))))/12"
+
+    ElseIf mar = "Single" And family = 4 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+  ElseIf mar = "Single" And family = 5 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+  ElseIf mar = "Single" And family = 6 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+  ElseIf mar = "Single" And family = 7 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+  ElseIf mar = "Single" And family = 8 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+    ElseIf mar = "Married" And family = 2 Then
+        eitc = "=IF(R15C3*12>=20330,0,IF(R15C3*12<20330,IF(R15C3*12>=13750,503-(R15C3*12-13750)*0.0765,IF(R15C3*12<13750,IF(R15C3*12>=6580,503,IF(R15C3*12<6580,R15C3*12*0.0765))))))/12"
+
+    ElseIf mar = "Married" And family = 3 Then
+        eitc = "=IF(R15C3*12>=44651,0,IF(R15C3*12<44651,IF(R15C3*12>=23630,3359-(R15C3*12-23630)*0.1598,IF(R15C3*12<23630,IF(R15C3*12>=9880,3359,IF(R15C3*12<9880,R15C3*12*0.34))))))/12"
+
+    ElseIf mar = "Married" And family = 4 Then
+        eitc = "=IF(R15C3*12>=49974,0,IF(R15C3*12<49974,IF(R15C3*12>=23630,5548-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,5548,IF(R15C3*12<13870,R15C3*12*0.4))))))/12"
+
+    ElseIf mar = "Married" And family = 5 Then
+        eitc = "=IF(R15C3*12>=53267,0,IF(R15C3*12<53267,IF(R15C3*12>=23630,6242-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+    ElseIf mar = "Married" And family = 6 Then
+        eitc = "=IF(R15C3*12>=53267,0,IF(R15C3*12<53267,IF(R15C3*12>=23630,6242-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+    ElseIf mar = "Married" And family = 7 Then
+        eitc = "=IF(R15C3*12>=53267,0,IF(R15C3*12<53267,IF(R15C3*12>=23630,6242-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+    ElseIf mar = "Married" And family = 8 Then
+        eitc = "=IF(R15C3*12>=53267,0,IF(R15C3*12<53267,IF(R15C3*12>=23630,6242-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+End If
+
+If gross > 4583 Then
+        eitc = 0
+End If
+
+'----------------------------------'
+'--------- Calculate TANF ---------'
+'----------------------------------'
+
+
+If family = 2 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((241-R16C3+200+(R15C3-200)/2)>0,(241-R16C3+200+(R15C3-200)/2),0),241)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((158-R16C3+200+(R15C3-200)/2)>0,(158-R16C3+200+(R15C3-200)/2),0),158)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((205-R16C3+200+(R15C3-200)/2)>0,(205-R16C3+200+(R15C3-200)/2),0),205)"
+End If
+End If
+
+If family = 3 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((303-R16C3+200+(R15C3-200)/2)>0,(303-R16C3+200+(R15C3-200)/2),0),303)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((198-R16C3+200+(R15C3-200)/2)>0,(198-R16C3+200+(R15C3-200)/2),0),198)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((258-R16C3+200+(R15C3-200)/2)>0,(258-R16C3+200+(R15C3-200)/2),0),258)"
+End If
+End If
+
+If family = 4 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((364-R16C3+200+(R15C3-200)/2)>0,(364-R16C3+200+(R15C3-200)/2),0),364)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((254-R16C3+200+(R15C3-200)/2)>0,(254-R16C3+200+(R15C3-200)/2),0),254)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((309-R16C3+200+(R15C3-200)/2)>0,(309-R16C3+200+(R15C3-200)/2),0),309)"
+End If
+End If
+
+If family = 5 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((426-R16C3+200+(R15C3-200)/2)>0,(426-R16C3+200+(R15C3-200)/2),0),426)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((289-R16C3+200+(R15C3-200)/2)>0,(289-R16C3+200+(R15C3-200)/2),0),289)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((362-R16C3+200+(R15C3-200)/2)>0,(362-R16C3+200+(R15C3-200)/2),0),362)"
+End If
+End If
+
+If family = 6 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((487-R16C3+200+(R15C3-200)/2)>0,(487-R16C3+200+(R15C3-200)/2),0),487)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((346-R16C3+200+(R15C3-200)/2)>0,(346-R16C3+200+(R15C3-200)/2),0),346)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((414-R16C3+200+(R15C3-200)/2)>0,(414-R16C3+200+(R15C3-200)/2),0),414)"
+End If
+End If
+
+If family = 7 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((549-R16C3+200+(R15C3-200)/2)>0,(549-R16C3+200+(R15C3-200)/2),0),549)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((392-R16C3+200+(R15C3-200)/2)>0,(392-R16C3+200+(R15C3-200)/2),0),392)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((467-R16C3+200+(R15C3-200)/2)>0,(467-R16C3+200+(R15C3-200)/2),0),467)"
+End If
+End If
+
+If family = 8 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((610-R16C3+200+(R15C3-200)/2)>0,(610-R16C3+200+(R15C3-200)/2),0),610)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((438-R16C3+200+(R15C3-200)/2)>0,(438-R16C3+200+(R15C3-200)/2),0),438)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((519-R16C3+200+(R15C3-200)/2)>0,(519-R16C3+200+(R15C3-200)/2),0),519)"
+End If
+End If
+
+'This code deals with the asset criteria
+If assets >= 2000 Then
+     tanf = 0
+End If
+
+'-----------------------------------'
+'--------- WIC Calculation ---------'
+'-----------------------------------'
+
+If family = 2 Then
+       wic = "=IF((R16C3)<=2470,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 3 Then
+       wic = "=IF((R16C3)<=3108,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 4 Then
+       wic = "=IF((R16C3)<=3747,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 5 Then
+       wic = "=IF((R16C3)<=4385,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 6 Then
+       wic = "=IF((R16C3)<=5023,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 7 Then
+       wic = "=IF((R16C3)<=5663,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 8 Then
+       wic = "=IF((R16C3)<=6304,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+End If
+
+'--------------------------------------'
+'--------- FLorida Head Start ---------'
+'--------------------------------------'
+
+If family = 2 Then
+        hs = "=if(R16C3<(15930/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 3 Then
+        hs = "=if(R16C3<(20091/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 4 Then
+        hs = "=if(R16C3<(24251/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 5 Then
+        hs = "=if(R16C3<(28411/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 6 Then
+        hs = "=if(R16C3<(32571/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 7 Then
+        hs = "=if(R16C3<(36731/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 8 Then
+        hs = "=if(R16C3<(40891/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+End If
+
+'-----------------------------------'
+'--------- SBP Calulcation ---------'
+'-----------------------------------'
+
+If family = 2 Then
+        sbp = "=IF(R16C3<(20826/12),1.58,IF(R16C3<(29637/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 3 Then
+        sbp = "=IF(R16C3<(26209/12),1.58,IF(R16C3<(37296/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 4 Then
+        sbp = "=IF(R16C3<(31591/12),1.58,IF(R16C3<(44956/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 5 Then
+        sbp = "=IF(R16C3<(36973/12),1.58,IF(R16C3<(52615/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 6 Then
+        sbp = "=IF(R16C3<(42354/12),1.58,IF(R16C3<(60273/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 7 Then
+        sbp = "=IF(R16C3<(47750/12),1.58,IF(R16C3<(67951/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 8 Then
+        sbp = "=IF(R16C3<(53158/12),1.58,IF(R16C3<(75648/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+End If
+
+'-----------------------------------'
+'--------- SLP Calulcation ---------'
+'-----------------------------------'
+
+
+If family = 2 Then
+        slp = "=IF(R16C3<(20826/12),2.93,IF(R16C3<(29637/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 3 Then
+        slp = "=IF(R16C3<(26209/12),2.93,IF(R16C3<(37296/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 4 Then
+        slp = "=IF(R16C3<(31591/12),2.93,IF(R16C3<(44956/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 5 Then
+        slp = "=IF(R16C3<(36973/12),2.93,IF(R16C3<(52615/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 6 Then
+        slp = "=IF(R16C3<(42354/12),2.93,IF(R16C3<(60273/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 7 Then
+        slp = "=IF(R16C3<(47750/12),2.93,IF(R16C3<(67951/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 8 Then
+        slp = "=IF(R16C3<(53158/12),2.93,IF(R16C3<(75648/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+End If
+
+'--------------------------------------'
+'--------- LIHEAP Calculation ---------'
+'--------------------------------------'
+
+If family = 1 Then
+        liheap = "=IF(R16C3<(17655/12),150/12,0)"
+
+    ElseIf family = 2 Then
+        liheap = "=IF(R16C3<(23895/12),316/12,0)"
+
+    ElseIf family = 3 Then
+        liheap = "=IF(R16C3<(30135/12),475/12,0)"
+
+    ElseIf family = 4 Then
+        liheap = "=IF(R16C3<(36375/12),475/12,0)"
+
+    ElseIf family = 5 Then
+        liheap = "=IF(R16C3<(42615/12),475/12,0)"
+
+    ElseIf family = 6 Then
+        liheap = "=IF(R16C3<(48855/12),475/12,0)"
+
+    ElseIf family = 7 Then
+        liheap = "=IF(R16C3<(55095/12),475/12,0)"
+
+    ElseIf family = 8 Then
+        liheap = "=IF(R16C3<(61335/12),475/12,0)"
+
+End If
+
+'-----------------------------------'
+'--------- SSI Calculation ---------'
+'-----------------------------------'
+
+If dis = "Yes" And mar = "Single" Then
+    net_ssi = "=IF(R15C3>=65,R16C3-20-65-(R15C3-65)/2,R16C3-20)"
+    ssi = "=if(R50C4>=773,0,if((773-R50C4)>773,773,773-R50C4))"
+
+    ElseIf dis = "Yes" And mar = "Married" Then
+        net_ssi = "=IF(R15C3>=65,R16C3-20-65-(R15C3-65)/2,R16C3-20)"
+        ssi = "=if(R50C4>=1100,0,if((1100-R50C4)>1100,1100,1100-R50C4))"
+
+    ElseIf dis = "No" Then
+        ssi = 0
+
+End If
+
+'------------------------------------'
+'--------- Florida Lifeline ---------'
+'------------------------------------'
+
+If gross <= 2511 Then
+    flp = "=if(sum(R4C6,R6C6,R7C6,R8C6,,R11C6,R12C6)>0,9.25,0)"
+    
+    Else: flp = 0
+
+End If
+
+'---------------------------------'
+'--------- Federal Taxes ---------'
+'---------------------------------'
+
+If mar = "Single" And family = 1 Then
+    taxinc = "=IF((R16C3*12-6300-4050)<0,0,R16C3*12-6300-4050)"
+    tax = "=IF(R50C5<=9275,R50C5*(-0.1),IF(R50C5>9275,IF(R50C5<=37650,9275*(-.01)+(R50C5-9275)*(-0.15),IF(R50C5>37650,9275*(-.01)+(28375)*(-0.15)+(R50C5-37650)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 2 Then
+    taxinc = "=IF((R16C3*12-9300-4050*2)<0,0,R16C3*12-9300-4050*2)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 3 Then
+    taxinc = "=IF((R16C3*12-9300-4050*3)<0,0,R16C3*12-9300-4050*3)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 4 Then
+    taxinc = "=IF((R16C3*12-9300-4050*4)<0,0,R16C3*12-9300-4050*4)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 5 Then
+    taxinc = "=IF((R16C3*12-9300-4050*5)<0,0,R16C3*12-9300-4050*5)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 6 Then
+    taxinc = "=IF((R16C3*12-9300-4050*6)<0,0,R16C3*12-9300-4050*6)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 7 Then
+    taxinc = "=IF((R16C3*12-9300-4050*7)<0,0,R16C3*12-9300-4050*7)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 8 Then
+    taxinc = "=IF((R16C3*12-9300-4050*8)<0,0,R16C3*12-9300-4050*8)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+
+    ElseIf mar = "Married" And family = 2 Then
+    taxinc = "=IF((R16C3*12-12600-4050*2)<0,0,R16C3*12-12600-4050*2)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 3 Then
+    taxinc = "=IF((R16C3*12-12600-4050*3)<0,0,R16C3*12-12600-4050*3)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 4 Then
+    taxinc = "=IF((R16C3*12-12600-4050*4)<0,0,R16C3*12-12600-4050*4)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 5 Then
+    taxinc = "=IF((R16C3*12-12600-4050*5)<0,0,R16C3*12-12600-4050*5)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 6 Then
+    taxinc = "=IF((R16C3*12-12600-4050*6)<0,0,R16C3*12-12600-4050*6)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 7 Then
+    taxinc = "=IF((R16C3*12-12600-4050*7)<0,0,R16C3*12-12600-4050*7)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 8 Then
+    taxinc = "=IF((R16C3*12-12600-4050*8)<0,0,R16C3*12-12600-4050*8)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+End If
+
+'---------------------------------'
+'--------- Payroll Taxes ---------'
+'---------------------------------'
+' 6.2% for social security, 1.45% for medicare
+
+payroll = "=R15C3*(-0.0765)*12"
+
+
+'--------------------------------'
+'--------- Medicaid/CHIP---------'
+'--------------------------------'
+
+If family = 1 Then
+    qualify_01 = "=if(R16C3<=2039.40,250,0)"
+    qualify_15 = "=if(R16C3<=1386,250,0)"
+    qualify_618 = "=if(R16C3<=1316.7,250,0)"
+    qualify_parents = "=if(R16C3<=297,250,if(R16C3>(11770/12),250-.03*R16C3,0))"
+
+ElseIf family = 2 Then
+    qualify_01 = "=if(R16C3 <=2750.1,250,if(R16C3>2750.1,if(R16C3<=2803.5,225,0)))"
+    qualify_15 = "=if(R16C3 <=1869,250,if(R16C3>1869,if(R16C3<=2803.5,225,0)))"
+    qualify_618 = "=if(R16C3 <=1775.55,250,if(R16C3>1775.55,if(R16C3<=2803.5,225,0)))"
+    qualify_parents = "=if(R16C3 <=400.5,250,if(R16C3>(15930/12),250-.03*R16C3,0))"
+
+ElseIf family = 3 Then
+    qualify_01 = "=if(R16C3 <=3460.8,250,if(R16C3>3460,if(R16C3<=3528,225,0)))"
+    qualify_15 = "=if(R16C3 <=2352,250,if(R16C3>2352.25,if(R16C3<=3528,225,0)))"
+    qualify_618 = "=if(R16C3 <=2234.4,250,if(R16C3>2234.4,if(R16C3<=3528,225,0)))"
+    qualify_parents = "=if(R16C3 <=504,250,if(r16C3> (20090/12),250-.03*R16C3,0))"
+
+ElseIf family = 4 Then
+    qualify_01 = "=if(R16C3 <=4171.5,250,if(R16C3>4171.5,if(R16C3<=4252.5,225,0)))"
+    qualify_15 = "=if(R16C3 <=2835,250,if(R16C3>2835,if(R16C3<=4252.5,225,0)))"
+    qualify_618 = "=if(R16C3 <=2693.4,250,if(R16C3>2693.4,if(R16C3<=4252.5,225,0)))"
+    qualify_parents = "=if(R16C3 <=607.5,250,if(R16C3>(24250/12),250-.03*R16C3,0))"
+
+ElseIf family = 5 Then
+    qualify_01 = "=if(R16C3 <=4882.2,250,if(R16C3>4882.2,if(R16C3<=4977,225,0)))"
+    qualify_15 = "=if(R16C3 <=3318,250,if(R16C3>3318,if(R16C3<=4977,225,0)))"
+    qualify_618 = "=if(R16C3 <=3152.1,250,if(R16C3>3152.1,if(R16C3<=4977,225,0)))"
+    qualify_parents = "=if(R16C3 <=711,250,if(R16C3>(28410/12),250-.03*R16C3,0)"
+
+ElseIf family = 6 Then
+    qualify_01 = "=if(R16C3 <=5592.9,250,if(R16C3>5592.9,if(R16C3<=5701.5,225,0)))"
+    qualify_15 = "=if(R16C3 <=3801,250,if(R16C3>3801,if(R16C3<=5701.5,225,0)))"
+    qualify_618 = "=if(R16C3 <=3610.95,250,if(R16C3>3601.95,if(R16C3<=5701.5,225,0)))"
+    qualify_parents = "=if(R16C3 <=814.5,250,if(R16C3>(32570/12),250-.03*R16C3,0))"
+
+ElseIf family = 7 Then
+    qualify_01 = "=if(R16C3 <=6305.66,250,if(R16C3>6305.66,if(R16C3<=6428.1,225,0)))"
+    qualify_15 = "=if(R16C3 <=4285.4,250,if(R16C3>4285.4,if(R16C3<=6428.1,225,0)))"
+    qualify_618 = "=if(R16C3 <=4071.13,250,if(R16C3>4071.13,if(R16C3<=6428.1,225,0)))"
+    qualify_parents = "=if(R16C3 <=918.3,250,if(R16C3>(36730/12),250-.03*R16C3,0))"
+
+ElseIf family = 8 Then
+    qualify_01 = "=if(R16C3 <=7020.48,250,if(R16C3>7020.48,if(R16C3<=7156.8,225,0)))"
+    qualify_15 = "=if(R16C3 <=4771.2,250,if(R16C3>4771.2,if(R16C3<=7156.8,225,0)))"
+    qualify_618 = "=if(R16C3 <=4532.64,250,if(R16C3>4532.64,if(R16C3<=7156.8,225,0)))"
+    qualify_parents = "=if(R16C3 <=1022.4,250,if(R16C3>(40890/12),250-.03*R16C3,0))"
+
+End If
+
+medicaid = "=if(R1C3=""Married"",R65C3*R2C3+R66C2*(R3C3+R4C3+R5C3+R6C3)+R67C2*(R7C3+R8C3)+R68C2*2,R65C3*R2C3+R66C2*(R3C3+R4C3+R5C3+R6C3)+R67C2*(R7C3+R8C3)+R68C2)"
+
+
+'----------------------------'
+'----- School Readiness -----'
+'----------------------------'
+
+
+Dim max_sr As Range
+    Set max_sr = Range("H50")
+
+max_sr = "=(R2C3*507+(R3C3+R4C3)*429+(R5C3+R6C3)*403+R7C3*273)"
+
+Dim copay As Range
+    Set copay = Range("I50")
+
+copay = "=(R16C3*.09+(R16C3*.09/2*(sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-1)))"
+
+Dim schoolread As Range
+    Set schoolread = Worksheets("Calculator").Range("F15")
+
+
+If family = 2 Then
+    schoolread = "=if(R16C3*12<23895,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 3 Then
+        schoolread = "=if(R16C3*12<30135,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 4 Then
+        schoolread = "=if(R16C3*12<36375,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 5 Then
+        schoolread = "=if(R16C3*12<42615,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 6 Then
+        schoolread = "=if(R16C3*12<48855,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 7 Then
+        schoolread = "=if(R16C3*12<55095,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 8 Then
+        schoolread = "=if(R16C3*12<61335,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+End If
+
+If schoolread < 0 Then
+    schoolread = 0
+End If
+
+
+
+
+'--------------------------------------------------------------'
+'--------Single person only gets SNAP/EITC/FLP/LIHEAP ---------'
+'--------------------------------------------------------------'
+If family = 1 Then
+    tanf = 0
+    wic = 0
+    hs = 0
+    sbp = 0
+    slp = 0
+    School_read = 0
+End If
+
+'------------------------------------------'
+'--------- Family Structure Title ---------'
+'------------------------------------------'
+
+Worksheets("calculator").Range("E1").FormulaR1C1 = "=if(sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3,R8C3)=1,(R1C3&"", 1 Child""),(R1C3&"", ""&sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3,R8C3)&"" Children""))"
+Worksheets("calculator").Range("F1").FormulaR1C1 = "=""Wage: $""&R10C3"
+Worksheets("calculator").Range("G1").FormulaR1C1 = "=""Hours: ""&R11C3"
+
+'-----------------------------------------'
+'--------- Copy and Paste Values ---------'
+'-----------------------------------------'
+
+Worksheets("Calculator").Range("E1:G1").Copy
+Worksheets("Calculator").Range("E1:G1").PasteSpecial xlPasteValues
+
+Worksheets("Calculator").Range("F3:F15").Copy
+Worksheets("Calculator").Range("F3:F15").PasteSpecial xlPasteValues
+
+Worksheets("Calculator").Range("G16:G17").Copy
+Worksheets("Calculator").Range("G16:G17").PasteSpecial xlPasteValues
+
+
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+Sub calculator2()
+'Last Updated: 6/18/16
+'Programs include: SNAP, EITC, TANF, WIC, SBP, SLP
+'Description: Calculates Scenario # 2 on Calculator
+
+'------------------------------------'
+'--------- Create variables ---------'
+'------------------------------------'
+
+Dim family As Range 'Family size
+    Set family = Worksheets("Calculator").Range("C9")
+
+Dim gross As Range 'Gross monthly income
+    Set gross = Worksheets("Calculator").Range("C16")
+
+Dim net As Range 'Snap "Net" Income
+    Set net = Worksheets("Calculator").Range("C50")
+
+Dim snap As Range 'Snap benefit
+    Set snap = Worksheets("Calculator").Range("I4")
+
+Dim rent As Range 'Monthly rent obligation
+    Set rent = Worksheets("Calculator").Range("C19")
+
+Dim assets As Range 'Total assets
+    Set assets = Worksheets("Calculator").Range("C18")
+
+Dim tanf As Range 'TANF benefit
+    Set tanf = Worksheets("Calculator").Range("I6")
+
+Dim hs As Range 'Head start benefit
+    Set hs = Worksheets("Calculator").Range("I8")
+
+Dim mar As Range 'Marital Status
+    Set mar = Range("C1")
+
+Dim eitc As Range 'EITC benefit
+    Set eitc = Worksheets("Calculator").Range("I5")
+
+Dim wic As Range 'WIC benefit
+    Set wic = Worksheets("Calculator").Range("I7")
+
+Dim sbp As Range 'School Breakfast Program benefit
+    Set sbp = Worksheets("Calculator").Range("I9")
+
+Dim slp As Range 'School lunch program benefit
+    Set slp = Worksheets("Calculator").Range("I10")
+
+Dim liheap As Range 'LIHEAP
+    Set liheap = Worksheets("Calculator").Range("I11")
+
+Dim net_ssi As Range 'SSI "net" income
+    Set net_ssi = Worksheets("Calculator").Range("D50")
+
+Dim ssi As Range 'SSI benefit
+    Set ssi = Worksheets("Calculator").Range("I12")
+
+Dim dis As Range 'Disability Questions
+    Set dis = Worksheets("Calculator").Range("C20")
+
+Dim flp As Range 'Florida Lifeline Program
+    Set flp = Worksheets("Calculator").Range("I13")
+
+Dim inc As Range
+    Set inc = Worksheets("Calculator").Range("I3")
+
+Dim tax As Range
+    Set tax = Worksheets("Calculator").Range("J16")
+
+Dim taxinc As Range
+    Set taxinc = Worksheets("Calculator").Range("E50")
+
+Dim payroll As Range
+    Set payroll = Worksheets("Calculator").Range("J17")
+
+Dim qualify_01 As Range
+    Set qualify_01 = Worksheets("Calculator").Range("C65")
+
+Dim qualify_15 As Range
+    Set qualify_15 = Worksheets("Calculator").Range("C66")
+
+Dim qualify_618 As Range
+    Set qualify_618 = Worksheets("Calculator").Range("C67")
+
+Dim qualify_parents As Range
+    Set qualify_parents = Worksheets("Calculator").Range("C68")
+
+Dim medicaid As Range
+    Set medicaid = Worksheets("Calculator").Range("I14")
+
+'----- Error Message for Family Size -----'
+If family > 8 Then
+    MsgBox "Family Size Can Not Exceed 8"
+End If
+
+
+'------------------------------------'
+'--------- Income Calculate ---------'
+'------------------------------------'
+
+inc = "=C16"
+
+
+'----------------------------------'
+'--------- Calculate SNAP ---------'
+'----------------------------------'
+
+If family = 1 Then
+    net = "=IF((R16C3-0.2*R15C3-155)<0,0,R16C3-0.2*R15C3-155)"
+    snap = "=IF(R16C3>1276,0,IF(194-0.3*R50C3<16,16,194-0.3*R50C3))"
+   
+ElseIf family = 2 Then
+    net = "=IF((R16C3-0.2* R15C3-155)<0,0,R16C3-0.2* R15C3-155)"
+    snap = "=IF(R16C3>1726,0,IF(357-0.3* R50C3 <16,16,357-0.3* R50C3))"
+
+ElseIf family = 3 Then
+    net = "=IF((R16C3-0.2* R15C3-155)<0,0, R16C3-0.2* R15C3-155)"
+    snap = "=IF(R16C3>2177,0,IF(511-0.3* R50C3 <0,0,511-0.3* R50C3))"
+
+ElseIf family = 4 Then
+    net = "=IF((R16C3-0.2* R15C3-168)<0,0, R16C3-0.2* R15C3-168)"
+    snap = "=IF(R16C3>2628,0,IF(649-0.3* R50C3 <0,0,649-0.3* R50C3))"
+
+ElseIf family = 5 Then
+    net = "=IF((R16C3-0.2* R15C3-197)<0,0, R16C3-0.2* R5C3-197)"
+    snap = "=IF(R16C3>3078,0,IF(771-0.3* R50C3 <0,0,771-0.3* R50C3))"
+
+ElseIf family = 6 Then
+    net = "=IF((R16C3-0.2* R15C3-226)<0,0,R16C3-0.2*R15C3-226)"
+    snap = "=IF(R16C3>3529,0,IF(925-0.3*R50C3<0,0,925-0.3*R50C3))"
+
+ElseIf family = 7 Then
+    net = "=IF((R16C3-0.2* R15C3-226)<0,0, R16C3-0.2* R15C3-226)"
+    snap = "=IF(R16C3>3980,0,IF(1022-0.3*R50C3<0,0,1022-0.3*R50C3))"
+
+ElseIf family = 8 Then
+    net = "=IF((R16C3-0.2* R15C3-226)<0,0, R16C3-0.2* R15C3-226)"
+    snap = "=IF(R16C3>4430,0,IF(1169-0.3*R50C3<0,0,1169-0.3*R50C3))"
+
+End If
+
+If assets >= 2250 Then
+    snap = 0
+End If
+
+'-----------------------------------'
+'---------- Calculate EITC ---------'
+'-----------------------------------'
+
+
+If mar = "Single" And family = 1 Then
+    eitc = "=IF(R15C3*12>=14820,0,IF(R15C3*12<14820,IF(R15C3*12>=8240,503-(R15C3*12-8240)*0.0765,IF(R15C3*12<8240,IF(R15C3*12>=6580,503,IF(R15C3*12<6580,R15C3*0.0765))))))/12"
+
+    ElseIf mar = "Single" And family = 2 Then
+        eitc = "=IF(R15C3*12>=39131,0,IF(R15C3*12<39131,IF(R15C3*12>=18110,3359-(R15C3*12-18110)*0.1598,IF(R15C3*12<18110,IF(R15C3*12>=9880,3359,IF(R15C3*12<9880,R15C3*12*0.34))))))/12"
+
+    ElseIf mar = "Single" And family = 3 Then
+        eitc = "=IF(R15C3*12>=44454,0,IF(R15C3*12<44454,IF(R15C3*12>=18110,5548-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,5548,IF(R15C3*12<13870,R15C3*12*0.4))))))/12"
+
+    ElseIf mar = "Single" And family = 4 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+  ElseIf mar = "Single" And family = 5 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+  ElseIf mar = "Single" And family = 6 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+  ElseIf mar = "Single" And family = 7 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+  ElseIf mar = "Single" And family = 8 Then
+        eitc = "=IF(R15C3*12>=47747,0,IF(R15C3*12<47747,IF(R15C3*12>=18110,6242-(R15C3*12-18110)*0.2106,IF(R15C3*12<18110,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+    ElseIf mar = "Married" And family = 2 Then
+        eitc = "=IF(R15C3*12>=20330,0,IF(R15C3*12<20330,IF(R15C3*12>=13750,503-(R15C3*12-13750)*0.0765,IF(R15C3*12<13750,IF(R15C3*12>=6580,503,IF(R15C3*12<6580,R15C3*12*0.0765))))))/12"
+
+    ElseIf mar = "Married" And family = 3 Then
+        eitc = "=IF(R15C3*12>=44651,0,IF(R15C3*12<44651,IF(R15C3*12>=23630,3359-(R15C3*12-23630)*0.1598,IF(R15C3*12<23630,IF(R15C3*12>=9880,3359,IF(R15C3*12<9880,R15C3*12*0.34))))))/12"
+
+    ElseIf mar = "Married" And family = 4 Then
+        eitc = "=IF(R15C3*12>=49974,0,IF(R15C3*12<49974,IF(R15C3*12>=23630,5548-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,5548,IF(R15C3*12<13870,R15C3*12*0.4))))))/12"
+
+    ElseIf mar = "Married" And family = 5 Then
+        eitc = "=IF(R15C3*12>=53267,0,IF(R15C3*12<53267,IF(R15C3*12>=23630,6242-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+    ElseIf mar = "Married" And family = 6 Then
+        eitc = "=IF(R15C3*12>=53267,0,IF(R15C3*12<53267,IF(R15C3*12>=23630,6242-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+    ElseIf mar = "Married" And family = 7 Then
+        eitc = "=IF(R15C3*12>=53267,0,IF(R15C3*12<53267,IF(R15C3*12>=23630,6242-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+    ElseIf mar = "Married" And family = 8 Then
+        eitc = "=IF(R15C3*12>=53267,0,IF(R15C3*12<53267,IF(R15C3*12>=23630,6242-(R15C3*12-23630)*0.2106,IF(R15C3*12<23630,IF(R15C3*12>=13870,6242,IF(R15C3*12<13870,R15C3*12*0.45))))))/12"
+
+End If
+
+
+
+If gross > 4583 Then
+        eitc = 0
+End If
+
+'----------------------------------'
+'--------- Calculate TANF ---------'
+'----------------------------------'
+
+
+If family = 2 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((241-R16C3+200+(R15C3-200)/2)>0,(241-R16C3+200+(R15C3-200)/2),0),241)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((158-R16C3+200+(R15C3-200)/2)>0,(158-R16C3+200+(R15C3-200)/2),0),158)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((205-R16C3+200+(R15C3-200)/2)>0,(205-R16C3+200+(R15C3-200)/2),0),205)"
+End If
+End If
+
+If family = 3 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((303-R16C3+200+(R15C3-200)/2)>0,(303-R16C3+200+(R15C3-200)/2),0),303)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((198-R16C3+200+(R15C3-200)/2)>0,(198-R16C3+200+(R15C3-200)/2),0),198)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((258-R16C3+200+(R15C3-200)/2)>0,(258-R16C3+200+(R15C3-200)/2),0),258)"
+End If
+End If
+
+If family = 4 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((364-R16C3+200+(R15C3-200)/2)>0,(364-R16C3+200+(R15C3-200)/2),0),364)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((254-R16C3+200+(R15C3-200)/2)>0,(254-R16C3+200+(R15C3-200)/2),0),254)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((309-R16C3+200+(R15C3-200)/2)>0,(309-R16C3+200+(R15C3-200)/2),0),309)"
+End If
+End If
+
+If family = 5 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((426-R16C3+200+(R15C3-200)/2)>0,(426-R16C3+200+(R15C3-200)/2),0),426)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((289-R16C3+200+(R15C3-200)/2)>0,(289-R16C3+200+(R15C3-200)/2),0),289)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((362-R16C3+200+(R15C3-200)/2)>0,(362-R16C3+200+(R15C3-200)/2),0),362)"
+End If
+End If
+
+If family = 6 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((487-R16C3+200+(R15C3-200)/2)>0,(487-R16C3+200+(R15C3-200)/2),0),487)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((346-R16C3+200+(R15C3-200)/2)>0,(346-R16C3+200+(R15C3-200)/2),0),346)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((414-R16C3+200+(R15C3-200)/2)>0,(414-R16C3+200+(R15C3-200)/2),0),414)"
+End If
+End If
+
+If family = 7 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((549-R16C3+200+(R15C3-200)/2)>0,(549-R16C3+200+(R15C3-200)/2),0),549)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((392-R16C3+200+(R15C3-200)/2)>0,(392-R16C3+200+(R15C3-200)/2),0),392)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((467-R16C3+200+(R15C3-200)/2)>0,(467-R16C3+200+(R15C3-200)/2),0),467)"
+End If
+End If
+
+If family = 8 Then
+    If rent > 50 Then
+       tanf = "=IF(R15C3>=200,IF((610-R16C3+200+(R15C3-200)/2)>0,(610-R16C3+200+(R15C3-200)/2),0),610)"
+    ElseIf rent = 0 Then
+       tanf = "=IF(R15C3>=200,IF((438-R16C3+200+(R15C3-200)/2)>0,(438-R16C3+200+(R15C3-200)/2),0),438)"
+    ElseIf rent > 0 Then
+       tanf = "=IF(R15C3>=200,IF((519-R16C3+200+(R15C3-200)/2)>0,(519-R16C3+200+(R15C3-200)/2),0),519)"
+End If
+End If
+
+'This code deals with the asset criteria
+If assets >= 2000 Then
+     tanf = 0
+End If
+
+'-----------------------------------'
+'--------- WIC Calculation ---------'
+'-----------------------------------'
+
+If family = 2 Then
+       wic = "=IF((R16C3)<=2470,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 3 Then
+       wic = "=IF((R16C3)<=3108,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 4 Then
+       wic = "=IF((R16C3)<=3747,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 5 Then
+       wic = "=IF((R16C3)<=4385,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 6 Then
+       wic = "=IF((R16C3)<=5023,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 7 Then
+       wic = "=IF((R16C3)<=5663,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+
+    ElseIf family = 8 Then
+       wic = "=IF((R16C3)<=6304,if(R2C3>0,(43.37*sum(R5C3,R4C3,R55C3)+43.37*(R2C3+1)),43.37*sum(R5C3,R4C3,R5C3)),0)"
+End If
+
+'--------------------------------------'
+'--------- FLorida Head Start ---------'
+'--------------------------------------'
+
+If family = 2 Then
+        hs = "=if(R16C3<(15930/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 3 Then
+        hs = "=if(R16C3<(20091/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 4 Then
+        hs = "=if(R16C3<(24251/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 5 Then
+        hs = "=if(R16C3<(28411/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 6 Then
+        hs = "=if(R16C3<(32571/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 7 Then
+        hs = "=if(R16C3<(36731/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+    ElseIf family = 8 Then
+        hs = "=if(R16C3<(40891/12),705*sum(R6C3,R5C3,R4C3),0)"
+
+End If
+
+'-----------------------------------'
+'--------- SBP Calulcation ---------'
+'-----------------------------------'
+
+If family = 2 Then
+        sbp = "=IF(R16C3<(20826/12),1.58,IF(R16C3<(29637/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 3 Then
+        sbp = "=IF(R16C3<(26209/12),1.58,IF(R16C3<(37296/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 4 Then
+        sbp = "=IF(R16C3<(31591/12),1.58,IF(R16C3<(44956/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 5 Then
+        sbp = "=IF(R16C3<(36973/12),1.58,IF(R16C3<(52615/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 6 Then
+        sbp = "=IF(R16C3<(42354/12),1.58,IF(R16C3<(60273/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 7 Then
+        sbp = "=IF(R16C3<(47750/12),1.58,IF(R16C3<(67951/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 8 Then
+        sbp = "=IF(R16C3<(53158/12),1.58,IF(R16C3<(75648/12),1.28,0.28))*sum(R7C3,R8C3)*180/12"
+
+End If
+
+'-----------------------------------'
+'--------- SLP Calulcation ---------'
+'-----------------------------------'
+
+
+If family = 2 Then
+        slp = "=IF(R16C3<(20826/12),2.93,IF(R16C3<(29637/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 3 Then
+        slp = "=IF(R16C3<(26209/12),2.93,IF(R16C3<(37296/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 4 Then
+        slp = "=IF(R16C3<(31591/12),2.93,IF(R16C3<(44956/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 5 Then
+        slp = "=IF(R16C3<(36973/12),2.93,IF(R16C3<(52615/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 6 Then
+        slp = "=IF(R16C3<(42354/12),2.93,IF(R16C3<(60273/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 7 Then
+        slp = "=IF(R16C3<(47750/12),2.93,IF(R16C3<(67951/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+    ElseIf family = 8 Then
+        slp = "=IF(R16C3<(53158/12),2.93,IF(R16C3<(75648/12),2.53,0.28))*sum(R7C3,R8C3)*180/12"
+
+End If
+
+'--------------------------------------'
+'--------- LIHEAP Calculation ---------'
+'--------------------------------------'
+
+If family = 1 Then
+        liheap = "=IF(R16C3<(17655/12),150/12,0)"
+
+    ElseIf family = 2 Then
+        liheap = "=IF(R16C3<(23895/12),316/12,0)"
+
+    ElseIf family = 3 Then
+        liheap = "=IF(R16C3<(30135/12),475/12,0)"
+
+    ElseIf family = 4 Then
+        liheap = "=IF(R16C3<(36375/12),475/12,0)"
+
+    ElseIf family = 5 Then
+        liheap = "=IF(R16C3<(42615/12),475/12,0)"
+
+    ElseIf family = 6 Then
+        liheap = "=IF(R16C3<(48855/12),475/12,0)"
+
+    ElseIf family = 7 Then
+        liheap = "=IF(R16C3<(55095/12),475/12,0)"
+
+    ElseIf family = 8 Then
+        liheap = "=IF(R16C3<(61335/12),475/12,0)"
+
+End If
+
+'-----------------------------------'
+'--------- SSI Calculation ---------'
+'-----------------------------------'
+
+If dis = "Yes" And mar = "Single" Then
+    net_ssi = "=IF(R15C3>=65,R16C3-20-65-(R15C3-65)/2,R16C3-20)"
+    ssi = "=if(R50C4>=773,0,if((773-R50C4)>773,773,773-R50C4))"
+
+    ElseIf dis = "Yes" And mar = "Married" Then
+        net_ssi = "=IF(R15C3>=65,R16C3-20-65-(R15C3-65)/2,R16C3-20)"
+        ssi = "=if(R50C4>=1100,0,if((1100-R50C4)>1100,1100,1100-R50C4))"
+
+    ElseIf dis = "No" Then
+        ssi = 0
+
+End If
+
+'------------------------------------'
+'--------- Florida Lifeline ---------'
+'------------------------------------'
+
+If gross <= 2511 Then
+    flp = "=if(sum(R4C6,R6C6,R7C6,R8C6,,R11C6,R12C6)>0,9.25,0)"
+    
+    Else: flp = 0
+
+End If
+
+'---------------------------------'
+'--------- Federal Taxes ---------'
+'---------------------------------'
+
+If mar = "Single" And family = 1 Then
+    taxinc = "=IF((R16C3*12-6300-4050)<0,0,R16C3*12-6300-4050)"
+    tax = "=IF(R50C5<=9275,R50C5*(-0.1),IF(R50C5>9275,IF(R50C5<=37650,9275*(-.01)+(R50C5-9275)*(-0.15),IF(R50C5>37650,9275*(-.01)+(28375)*(-0.15)+(R50C5-37650)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 2 Then
+    taxinc = "=IF((R16C3*12-9300-4050*2)<0,0,R16C3*12-9300-4050*2)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 3 Then
+    taxinc = "=IF((R16C3*12-9300-4050*3)<0,0,R16C3*12-9300-4050*3)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 4 Then
+    taxinc = "=IF((R16C3*12-9300-4050*4)<0,0,R16C3*12-9300-4050*4)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 5 Then
+    taxinc = "=IF((R16C3*12-9300-4050*5)<0,0,R16C3*12-9300-4050*5)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 6 Then
+    taxinc = "=IF((R16C3*12-9300-4050*6)<0,0,R16C3*12-9300-4050*6)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 7 Then
+    taxinc = "=IF((R16C3*12-9300-4050*7)<0,0,R16C3*12-9300-4050*7)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+    ElseIf mar = "Single" And family = 8 Then
+    taxinc = "=IF((R16C3*12-9300-4050*8)<0,0,R16C3*12-9300-4050*8)"
+    tax = "=IF(R50C5<=13250,R50C5*(-0.1),IF(R50C5>13250,IF(R50C5<=50400,13250*(-.1)+(R50C5-13250)*(-0.15),IF(R50C5>50400,13250*(-.1)+(37150)*(-0.15)+(R50C5-50400)*(-0.25)))))"
+
+
+    ElseIf mar = "Married" And family = 2 Then
+    taxinc = "=IF((R16C3*12-12600-4050*2)<0,0,R16C3*12-12600-4050*2)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 3 Then
+    taxinc = "=IF((R16C3*12-12600-4050*3)<0,0,R16C3*12-12600-4050*3)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 4 Then
+    taxinc = "=IF((R16C3*12-12600-4050*4)<0,0,R16C3*12-12600-4050*4)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 5 Then
+    taxinc = "=IF((R16C3*12-12600-4050*5)<0,0,R16C3*12-12600-4050*5)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 6 Then
+    taxinc = "=IF((R16C3*12-12600-4050*6)<0,0,R16C3*12-12600-4050*6)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 7 Then
+    taxinc = "=IF((R16C3*12-12600-4050*7)<0,0,R16C3*12-12600-4050*7)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+    ElseIf mar = "Married" And family = 8 Then
+    taxinc = "=IF((R16C3*12-12600-4050*8)<0,0,R16C3*12-12600-4050*8)"
+    tax = "=IF(R50C5<=18550,R50C5*(-0.1),IF(R50C5>18550,IF(R50C5<=75300,18550*(-.1)+(R50C5-18550)*(-0.15))))"
+
+End If
+
+'---------------------------------'
+'--------- Payroll Taxes ---------'
+'---------------------------------'
+' 6.2% for social security, 1.45% for medicare
+
+payroll = "=R15C3*(-0.0765)*12"
+
+
+'----------------------------'
+'--------- Medicaid ---------'
+'----------------------------'
+If family = 1 Then
+    qualify_01 = "=if(R16C3<=2039.40,250,0)"
+    qualify_15 = "=if(R16C3<=1386,250,0)"
+    qualify_618 = "=if(R16C3<=1316.7,250,0)"
+    qualify_parents = "=if(R16C3<=297,250,if(R16C3>(11770/12),250-.03*R16C3,0))"
+
+ElseIf family = 2 Then
+    qualify_01 = "=if(R16C3 <=2750.1,250,if(R16C3>2750.1,if(R16C3<=2803.5,225,0)))"
+    qualify_15 = "=if(R16C3 <=1869,250,if(R16C3>1869,if(R16C3<=2803.5,225,0)))"
+    qualify_618 = "=if(R16C3 <=1775.55,250,if(R16C3>1775.55,if(R16C3<=2803.5,225,0)))"
+    qualify_parents = "=if(R16C3 <=400.5,250,if(R16C3>(15930/12),250-.03*R16C3,0))"
+
+ElseIf family = 3 Then
+    qualify_01 = "=if(R16C3 <=3460.8,250,if(R16C3>3460,if(R16C3<=3528,225,0)))"
+    qualify_15 = "=if(R16C3 <=2352,250,if(R16C3>2352.25,if(R16C3<=3528,225,0)))"
+    qualify_618 = "=if(R16C3 <=2234.4,250,if(R16C3>2234.4,if(R16C3<=3528,225,0)))"
+    qualify_parents = "=if(R16C3 <=504,250,if(r16C3> (20090/12),250-.03*R16C3,0))"
+
+ElseIf family = 4 Then
+    qualify_01 = "=if(R16C3 <=4171.5,250,if(R16C3>4171.5,if(R16C3<=4252.5,225,0)))"
+    qualify_15 = "=if(R16C3 <=2835,250,if(R16C3>2835,if(R16C3<=4252.5,225,0)))"
+    qualify_618 = "=if(R16C3 <=2693.4,250,if(R16C3>2693.4,if(R16C3<=4252.5,225,0)))"
+    qualify_parents = "=if(R16C3 <=607.5,250,if(R16C3>(24250/12),250-.03*R16C3,0))"
+
+ElseIf family = 5 Then
+    qualify_01 = "=if(R16C3 <=4882.2,250,if(R16C3>4882.2,if(R16C3<=4977,225,0)))"
+    qualify_15 = "=if(R16C3 <=3318,250,if(R16C3>3318,if(R16C3<=4977,225,0)))"
+    qualify_618 = "=if(R16C3 <=3152.1,250,if(R16C3>3152.1,if(R16C3<=4977,225,0)))"
+    qualify_parents = "=if(R16C3 <=711,250,if(R16C3>(28410/12),250-.03*R16C3,0)"
+
+ElseIf family = 6 Then
+    qualify_01 = "=if(R16C3 <=5592.9,250,if(R16C3>5592.9,if(R16C3<=5701.5,225,0)))"
+    qualify_15 = "=if(R16C3 <=3801,250,if(R16C3>3801,if(R16C3<=5701.5,225,0)))"
+    qualify_618 = "=if(R16C3 <=3610.95,250,if(R16C3>3601.95,if(R16C3<=5701.5,225,0)))"
+    qualify_parents = "=if(R16C3 <=814.5,250,if(R16C3>(32570/12),250-.03*R16C3,0))"
+
+ElseIf family = 7 Then
+    qualify_01 = "=if(R16C3 <=6305.66,250,if(R16C3>6305.66,if(R16C3<=6428.1,225,0)))"
+    qualify_15 = "=if(R16C3 <=4285.4,250,if(R16C3>4285.4,if(R16C3<=6428.1,225,0)))"
+    qualify_618 = "=if(R16C3 <=4071.13,250,if(R16C3>4071.13,if(R16C3<=6428.1,225,0)))"
+    qualify_parents = "=if(R16C3 <=918.3,250,if(R16C3>(36730/12),250-.03*R16C3,0))"
+
+ElseIf family = 8 Then
+    qualify_01 = "=if(R16C3 <=7020.48,250,if(R16C3>7020.48,if(R16C3<=7156.8,225,0)))"
+    qualify_15 = "=if(R16C3 <=4771.2,250,if(R16C3>4771.2,if(R16C3<=7156.8,225,0)))"
+    qualify_618 = "=if(R16C3 <=4532.64,250,if(R16C3>4532.64,if(R16C3<=7156.8,225,0)))"
+    qualify_parents = "=if(R16C3 <=1022.4,250,if(R16C3>(40890/12),250-.03*R16C3,0))"
+
+End If
+
+medicaid = "=if(R1C3=""Married"",R65C3*R2C3+R66C2*(R3C3+R4C3+R5C3+R6C3)+R67C2*(R7C3+R8C3)+R68C2*2,R65C3*R2C3+R66C2*(R3C3+R4C3+R5C3+R6C3)+R67C2*(R7C3+R8C3)+R68C2)"
+
+
+
+
+'----------------------------'
+'----- School Readiness -----'
+'----------------------------'
+
+
+Dim max_sr As Range
+    Set max_sr = Range("H50")
+
+max_sr = "=(R2C3*507+(R3C3+R4C3)*429+(R5C3+R6C3)*403+R7C3*273)"
+
+Dim copay As Range
+    Set copay = Range("I50")
+
+copay = "=(R16C3*.09+(R16C3*.09/2*(sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-1)))"
+
+Dim schoolread As Range
+    Set schoolread = Worksheets("Calculator").Range("I15")
+
+
+If family = 2 Then
+    schoolread = "=if(R16C3*12<23895,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 3 Then
+        schoolread = "=if(R16C3*12<30135,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 4 Then
+        schoolread = "=if(R16C3*12<36375,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 5 Then
+        schoolread = "=if(R16C3*12<42615,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 6 Then
+        schoolread = "=if(R16C3*12<48855,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 7 Then
+        schoolread = "=if(R16C3*12<55095,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+    ElseIf family = 8 Then
+        schoolread = "=if(R16C3*12<61335,if((535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9)<R50C8,(535*sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3)-R50C9),R50C8),0)"
+
+
+End If
+
+
+If schoolread < 0 Then
+    schoolread = 0
+End If
+
+
+'--------------------------------------------------------------'
+'--------Single person only gets SNAP/EITC/FLP/LIHEAP ---------'
+'--------------------------------------------------------------'
+If family = 1 Then
+    tanf = 0
+    wic = 0
+    hs = 0
+    sbp = 0
+    slp = 0
+    School_read = 0
+    medicaid = 0
+End If
+
+'------------------------------------------'
+'--------- Family Structure Title ---------'
+'------------------------------------------'
+
+Worksheets("calculator").Range("H1").FormulaR1C1 = "=if(sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3,R8C3)=1,(R1C3&"", 1 Child""),(R1C3&"", ""&sum(R2C3,R3C3,R4C3,R5C3,R6C3,R7C3,R8C3)&"" Children""))"
+Worksheets("calculator").Range("I1").FormulaR1C1 = "=""Wage: $""&R10C3"
+Worksheets("calculator").Range("J1").FormulaR1C1 = "=""Hours: ""&R11C3"
+
+'-----------------------------------------'
+'--------- Copy and Paste Values ---------'
+'-----------------------------------------'
+
+Worksheets("Calculator").Range("H1:J1").Copy
+Worksheets("Calculator").Range("H1:J1").PasteSpecial xlPasteValues
+
+Worksheets("Calculator").Range("I3:I15").Copy
+Worksheets("Calculator").Range("I3:I15").PasteSpecial xlPasteValues
+
+Worksheets("Calculator").Range("J16:J17").Copy
+Worksheets("Calculator").Range("J16:J17").PasteSpecial xlPasteValues
+
+
+End Sub
+
