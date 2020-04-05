@@ -1,0 +1,133 @@
+Sub CalcReset()
+'Description: Resets sheet to defualt formaula or blanks
+
+
+'--------------------------------------'
+'--------- Questionaire Reset ---------'
+'--------------------------------------'
+
+Worksheets("Calculator").Range("E1") = ""
+Worksheets("Calculator").Range("F1") = ""
+Worksheets("Calculator").Range("G1") = ""
+
+Worksheets("Calculator").Range("C1") = ""
+Worksheets("Calculator").Range("C2") = ""
+Worksheets("Calculator").Range("C3") = ""
+Worksheets("Calculator").Range("C4") = ""
+Worksheets("Calculator").Range("C5") = ""
+Worksheets("Calculator").Range("C6") = ""
+Worksheets("Calculator").Range("C7") = ""
+Worksheets("Calculator").Range("C8").FormulaR1C1 = ""
+Worksheets("Calculator").Range("C9").FormulaR1C1 = "=if(R1C3=""Single"",1+R2C3+R3C3+R4C3+R5C3+R6C3+R7C3+R8C3,if(R1C3=""Married"",2+R2C3+R3C3+R4C3+R5C3+R6C3+R7C3+R8C3,""""))"
+Worksheets("Calculator").Range("C10") = ""
+Worksheets("Calculator").Range("C11") = ""
+Worksheets("Calculator").Range("C12").FormulaR1C1 = "=if(R1C3=""Single"",""N/A"","""")"
+Worksheets("Calculator").Range("C13").FormulaR1C1 = "=if(R1C3=""Single"",""N/A"","""")"
+Worksheets("Calculator").Range("C14") = ""
+Worksheets("Calculator").Range("C15").FormulaR1C1 = "=IF(R1C3=""Single"",round((R10C3*R11C3)*52/12,0),round((R10C3*R11C3+R12C3*R13C3)*52/12,0))"
+Worksheets("Calculator").Range("C16").Formula = "=$C$15+$C$14"
+Worksheets("Calculator").Range("C18") = ""
+Worksheets("Calculator").Range("C19") = ""
+Worksheets("Calculator").Range("C20") = ""
+
+
+'---------------------------------'
+'--------- Benefit Reset ---------'
+'---------------------------------'
+
+Worksheets("calculator").Range("E2") = ""
+Worksheets("calculator").Range("F3") = ""
+Worksheets("calculator").Range("F4") = ""
+Worksheets("calculator").Range("F5") = ""
+Worksheets("calculator").Range("F6") = ""
+Worksheets("calculator").Range("F7") = ""
+Worksheets("calculator").Range("F8") = ""
+Worksheets("calculator").Range("F9") = ""
+Worksheets("calculator").Range("F10") = ""
+Worksheets("calculator").Range("F11") = ""
+Worksheets("calculator").Range("F12") = ""
+Worksheets("calculator").Range("F13") = ""
+Worksheets("calculator").Range("F14") = ""
+Worksheets("calculator").Range("F15") = ""
+Worksheets("calculator").Range("F16") = "=G16/12"
+Worksheets("calculator").Range("F17") = "=G17/12"
+
+Worksheets("calculator").Range("F19").Formula = "=sum(F3,F16,F17)"
+Worksheets("calculator").Range("F20").Formula = "=sum(F4:F15)"
+Worksheets("calculator").Range("F21").Formula = "=sum(F19:F20)"
+
+
+Worksheets("calculator").Range("G3") = "=F3*12"
+Worksheets("calculator").Range("G4") = "=F4*12"
+Worksheets("calculator").Range("G5") = "=F5*12"
+Worksheets("calculator").Range("G6") = "=F6*12"
+Worksheets("calculator").Range("G7") = "=F7*12"
+Worksheets("calculator").Range("G8") = "=F8*12"
+Worksheets("calculator").Range("G9") = "=F9*12"
+Worksheets("calculator").Range("G10") = "=F10*12"
+Worksheets("calculator").Range("G11") = "=F11*12"
+Worksheets("calculator").Range("G12") = "=F12*12"
+Worksheets("calculator").Range("G13") = "=F13*12"
+Worksheets("calculator").Range("G14") = "=F14*12"
+Worksheets("Calculator").Range("G15") = "=F15*12"
+Worksheets("Calculator").Range("G16") = ""
+Worksheets("calculator").Range("G17") = ""
+
+Worksheets("calculator").Range("G19") = "=F19*12"
+Worksheets("calculator").Range("G20") = "=F20*12"
+Worksheets("calculator").Range("G21") = "=F21*12"
+
+'-----------------------------------'
+'--------- Benefit Reset 2 ---------'
+'-----------------------------------'
+
+Worksheets("Calculator").Range("H1") = ""
+Worksheets("Calculator").Range("I1") = ""
+Worksheets("Calculator").Range("J1") = ""
+
+
+Worksheets("calculator").Range("H2") = ""
+Worksheets("calculator").Range("I3") = ""
+Worksheets("calculator").Range("I4") = ""
+Worksheets("calculator").Range("I5") = ""
+Worksheets("calculator").Range("I6") = ""
+Worksheets("calculator").Range("I7") = ""
+Worksheets("calculator").Range("I8") = ""
+Worksheets("calculator").Range("I9") = ""
+Worksheets("calculator").Range("I10") = ""
+Worksheets("calculator").Range("I11") = ""
+Worksheets("calculator").Range("I12") = ""
+Worksheets("calculator").Range("I13") = ""
+Worksheets("calculator").Range("I14") = ""
+Worksheets("calculator").Range("I15") = ""
+Worksheets("calculator").Range("I16") = "=J16/12"
+Worksheets("calculator").Range("I17") = "=J17/12"
+
+Worksheets("calculator").Range("I19").Formula = "=sum(I3,I16,I17)"
+Worksheets("calculator").Range("I20").Formula = "=sum(I4:I15)"
+Worksheets("calculator").Range("I21").Formula = "=sum(I19:I20)"
+
+Worksheets("calculator").Range("J3") = "=I3*12"
+Worksheets("calculator").Range("J4") = "=I4*12"
+Worksheets("calculator").Range("J5") = "=I5*12"
+Worksheets("calculator").Range("J6") = "=I6*12"
+Worksheets("calculator").Range("J7") = "=I7*12"
+Worksheets("calculator").Range("J8") = "=I8*12"
+Worksheets("calculator").Range("J9") = "=I9*12"
+Worksheets("calculator").Range("J10") = "=I10*12"
+Worksheets("calculator").Range("J11") = "=I11*12"
+Worksheets("calculator").Range("J12") = "=I12*12"
+Worksheets("calculator").Range("J13") = "=I13*12"
+Worksheets("calculator").Range("J14") = "=I14*12"
+Worksheets("Calculator").Range("J15") = "=I15*12"
+Worksheets("Calculator").Range("J16") = ""
+Worksheets("calculator").Range("J17") = ""
+
+Worksheets("calculator").Range("J19") = "=I19*12"
+Worksheets("calculator").Range("J20") = "=I20*12"
+Worksheets("calculator").Range("J21") = "=I21*12"
+
+
+
+End Sub
+
